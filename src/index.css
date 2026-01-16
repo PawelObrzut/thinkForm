@@ -1,3 +1,36 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-deepIndigo: #000853;
+
+  --color-lavander-50: #F0EAF8;
+  --color-lavander-100: #CBB6E5;
+
+  --color-active-50: #FAF9FA;
+  --color-active-100: #761BE4;
+
+  --color-danger-50: #FEECEC;
+  --color-danger-100: #ED4545;
+}
+
+/* ------------------- */
+/* Reset               */
+/* ------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* elements reset */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  outline: none;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
