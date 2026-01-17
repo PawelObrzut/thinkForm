@@ -6,21 +6,25 @@ import type {
 } from "react";
 import DeleteIcon from "./icons/DeleteIcon";
 
-export default function FileUpload() {
+type Props = {
+	file: File | null;
+	onChange: (file: File | null) => void;
+}
+
+const FileUpload = ({file, onChange}: Props) => {
 	const inputRef = useRef<HTMLInputElement | null>(null);
-	const [file, setFile] = useState<File | null>(null);
 
 	const openFileDialog = () => inputRef.current?.click();
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
-			setFile(e.target.files[0]);
+			onChange(e.target.files[0]);
 		}
 	};
 
 	const handleFileDelete = (e: MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
-		setFile(null)
+		onChange(null);
     if (inputRef.current) {
       inputRef.current.value = '';
     }
@@ -30,7 +34,7 @@ export default function FileUpload() {
 	  e.preventDefault();
 	  const files = e.dataTransfer.files;
     if (files && files.length > 0) {
-      setFile(files[0]);
+      onChange(files[0]);
     }
 	}
 
@@ -76,3 +80,5 @@ export default function FileUpload() {
 		</div>
 	);
 }
+
+export default FileUpload

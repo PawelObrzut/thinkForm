@@ -5,10 +5,11 @@ type Props = {
 	label: string;
 	name: string;
 	type?: 'text' | 'email';
+	value: string;
+	onChange: (key: string, value: string) => void;
 }
 
-const TextField = ({ label, name, type = 'text' }: Props) => {
-	const [inputValue, setInputValue] = useState('')
+const TextField = ({ label, name, type = 'text', value, onChange }: Props) => {
 	const [isInputFocused, setIsInputFocused] = useState(false)
 	const [error, setError] = useState(false)
 
@@ -21,14 +22,14 @@ const TextField = ({ label, name, type = 'text' }: Props) => {
 	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputValue(e.target.value)
+		onChange(name, e.target.value)
 	}
 
 	const handleFocus = () => setIsInputFocused(true)
 
 	const handleBlur = () => {
 		setIsInputFocused(false)
-		setError(!validateEmail(inputValue));
+		setError(!validateEmail(value));
 	}
 
 	const baseStyle = 'text-base font-medium rounded-lg pl-4 h-12 w-full'
@@ -53,7 +54,7 @@ const TextField = ({ label, name, type = 'text' }: Props) => {
 			<input
 				type={type}
 				id={name} name={name}
-				value={inputValue}
+				value={value}
 				onChange={handleChange}
 				onFocus={handleFocus}
 				onBlur={handleBlur}
