@@ -1,5 +1,6 @@
 import RangeSlider from "./components/RangeSlider"
 import TextField from "./components/TextField"
+import UploadFile from "./components/UploadFile"
 
 function App() {
   return (
@@ -13,12 +14,9 @@ function App() {
           <TextField label={'First Name'} name={'firstName'} />
           <TextField label={'Last Name'} name={'lastName'} />
           <TextField label={'Email Address'} name={'email'} type={'email'} />
-
           <RangeSlider min={8} max={100} label={'Age'} />
-
+          <UploadFile />
         </div>
-
-
       </form>
     </main>
   )
