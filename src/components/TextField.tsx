@@ -46,7 +46,7 @@ const TextField = ({ label, name, type = 'text' }: Props) => {
 		<div>
 			<label
 				htmlFor={name}
-				className='font-normal text-base'
+				className='font-normal text-base block mb-2'
 			>
 				{label}
 			</label>
