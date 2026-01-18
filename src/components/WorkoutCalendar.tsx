@@ -3,6 +3,7 @@ import axios from "axios";
 import Calendar from "react-calendar";
 import PrevIcon from './icons/PrevIcon';
 import NextIcon from './icons/NextIcon';
+import InfoIcon from "./icons/InfoIcon";
 
 type Props = {
   selectedDate: Date | null;
@@ -46,8 +47,6 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
         );
 
         setHolidays(response.data);
-        console.log(response.data)
-
       } catch (error: any) {
         console.error();
       }
@@ -86,8 +85,8 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
       />
 
       {observance && (
-        <div className="mt-2 text-sm text-gray-600">
-          <strong>!</strong> {observance.name}
+        <div>
+          <p className='flex items-center pt-3 text-sm'><InfoIcon /> It is {observance.name}.</p>
         </div>
       )}
 

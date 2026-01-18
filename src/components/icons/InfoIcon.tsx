@@ -1,15 +1,17 @@
-const WarningIcon = () => {
+import React from 'react'
+
+const InfoIcon = () => {
   return (
     <svg
       width='20'
       height='20'
       viewBox="0 0 90 90"
-      className='m-1'
+      className='m-1 rotate-180'
       aria-hidden="true"
       focusable="false"
     >
 
-      <circle cx="45" cy="45" r="45" className='fill-danger-100' />
+      <circle cx="45" cy="45" r="45" className='fill-lavander-100' />
 
       <rect
         x="41"
@@ -22,7 +24,7 @@ const WarningIcon = () => {
 
       <circle cx="45" cy="70" r="4" fill="#fff" />
     </svg>
-  );
-};
+  )
+}
 
-export default WarningIcon;
+export default InfoIcon
