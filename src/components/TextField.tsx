@@ -59,12 +59,15 @@ const TextField = ({ label, name, type = 'text', value, onChange }: Props) => {
 				onFocus={handleFocus}
 				onBlur={handleBlur}
 				className={`${baseStyle} ${stateStyle}`}
+				aria-invalid={error}
+        aria-describedby={error ? `${name}-error` : undefined}
+        required
 			/>
 			{
 				error &&
 				<div className='flex gap-2 mt-2.25'>
 					<div>
-						<WarningIcon />
+						<WarningIcon aria-hidden='true' />
 					</div>
 					<div className=''>
 						<p>Please use correct formatting</p>

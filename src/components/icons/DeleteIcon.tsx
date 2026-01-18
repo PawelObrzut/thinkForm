@@ -5,7 +5,6 @@ const DeleteIcon = () => {
       height='20'
       viewBox="0 0 90 90"
       className='m-1'
-      aria-hidden="true"
     >
 
       <circle cx="45" cy="45" r="45" className="fill-deelIndigo hover:fill-danger-100" />
@@ -20,7 +19,6 @@ const DeleteIcon = () => {
         transform="rotate(45 45 45)"
         className="pointer-events-none"
       />
-
 
       <rect
         x="40"

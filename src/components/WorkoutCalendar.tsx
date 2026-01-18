@@ -4,6 +4,7 @@ import Calendar from "react-calendar";
 import PrevIcon from './icons/PrevIcon';
 import NextIcon from './icons/NextIcon';
 import InfoIcon from "./icons/InfoIcon";
+import { HOLIDAYS_API_URL } from "../api/urls"
 
 type Props = {
   selectedDate: Date | null;
@@ -35,7 +36,7 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
     const fetchHolidays = async () => {
       try {
         const response = await axios.get(
-          "https://api.api-ninjas.com/v1/holidays",
+          HOLIDAYS_API_URL,
           {
             headers: {
               "X-Api-Key": import.meta.env.VITE_API_NINJA_KEY
