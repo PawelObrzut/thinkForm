@@ -29,6 +29,8 @@ function App() {
     time: null as string | null,
   });
 
+  const [isEmailValid, setIsEmailValid] = useState(true);
+
   const TimeSlots = ['12:00', '14:00', '16:30', '18:30', '20:00'];
 
   const handleTextInput = (key: string, value: string) => {
@@ -69,6 +71,9 @@ function App() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!isEmailValid) return;
+
     const data = new FormData();
 
     data.append('firstName', formData.firstName);
@@ -92,11 +97,41 @@ function App() {
         </h1>
 
         <div className='flex flex-col gap-6 my-8'>
-          <TextField label={'First Name'} name={'firstName'} value={formData.firstName} onChange={handleTextInput} />
-          <TextField label={'Last Name'} name={'lastName'} value={formData.lastName} onChange={handleTextInput} />
-          <TextField label={'Email Address'} name={'email'} type={'email'} value={formData.email} onChange={handleTextInput} />
-          <RangeSlider min={8} max={100} label={'Age'} value={formData.age} onChange={handleAgeInput} />
-          <UploadFile file={formData.photo} onChange={handlePhotoInput} />
+          <TextField
+            label={'First Name'}
+            name={'firstName'}
+            value={formData.firstName}
+            onChange={handleTextInput}
+          />
+
+          <TextField
+            label={'Last Name'}
+            name={'lastName'}
+            value={formData.lastName}
+            onChange={handleTextInput}
+          />
+
+          <TextField
+            label={'Email Address'}
+            name={'email'}
+            type={'email'}
+            value={formData.email}
+            onChange={handleTextInput}
+            onValidityChange={setIsEmailValid}
+          />
+
+          <RangeSlider
+            min={8}
+            max={100}
+            label={'Age'}
+            value={formData.age}
+            onChange={handleAgeInput}
+          />
+
+          <UploadFile
+            file={formData.photo}
+            onChange={handlePhotoInput}
+          />
         </div>
 
         <h1 className='text-2xl font-medium mb-4'>Your Workout</h1>
@@ -116,7 +151,14 @@ function App() {
             <section className='sm:w-2/10'>
               <p className='mb-2'>Time</p>
               <div className='grid grid-cols-4 gap-2 sm:grid-cols-1'>
-                {TimeSlots.map((time) => <TimeSlot key={time} label={time} isSelected={formData.time === time} onSelect={handleTimeInput} />)}
+                {TimeSlots.map((time) => (
+                  <TimeSlot
+                    key={time}
+                    label={time}
+                    isSelected={formData.time === time}
+                    onSelect={handleTimeInput}
+                  />
+                ))}
               </div>
             </section>
           )}
@@ -127,6 +169,7 @@ function App() {
             !formData.firstName ||
             !formData.lastName ||
             !formData.email ||
+            !isEmailValid ||
             !formData.photo ||
             !formData.selectedDate ||
             !formData.time
