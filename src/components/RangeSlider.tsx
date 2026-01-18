@@ -30,7 +30,7 @@ const RangeSlider = ({label, min, max, value, onChange}: Props) => {
           style={{ "--progress": `${percentage}%` } as React.CSSProperties}
         />
 
-        <div className='absolute -translate-x-1/2' style={{ left: `clamp(0%, ${percentage}%, 100%)` }} >
+        <div className='absolute -translate-x-1/2' style={{ left: `calc(${percentage}% + (${8 - percentage * 0.16}px))` }} >
           <div className='absolute z-10 w-2 h-2 -translate-x-1/2 left-1/2 translate-y-1/2 top-[0.25px] bg-white border-l border-t border-lavander-100 rotate-45' />
           <div className='relative top-2 px-4 py-1 bg-white text-active-100 border border-lavander-100 rounded font-medium'>
             {value}
