@@ -4,18 +4,32 @@ import TextField from "./components/TextField"
 import UploadFile from "./components/UploadFile"
 import TimeSlot from "./components/TimeSlot"
 import WorkoutCalendar from "./components/WorkoutCalendar"
+import SubmitButton from "./components/SubmitButton"
+import { SUBMIT_FORM_URL } from "./api/urls"
+import axios from "axios"
+
+type FormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  age: number;
+  photo: File | null;
+  selectedDate: Date | null;
+  time: string | null;
+}
 
 function App() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     email: '',
     age: 8,
     photo: null as File | null,
+    selectedDate: null as Date | null,
     time: null as string | null,
   });
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const TimeSlots = ['12:00', '14:00', '16:30', '18:30', '20:00'];
 
   const handleTextInput = (key: string, value: string) => {
     setFormData((prev) => ({
@@ -38,6 +52,14 @@ function App() {
     }));
   };
 
+  const handleDateInput = (date: Date) => {
+    setFormData(prev => ({
+      ...prev,
+      selectedDate: date,
+      time: null
+    }));
+  };
+
   const handleTimeInput = (time: string) => {
     setFormData(prev => ({
       ...prev,
@@ -45,11 +67,26 @@ function App() {
     }));
   };
 
-  const TimeSlots = ['12:00', '14:00', '16:30', '18:30', '20:00'];
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData();
+
+    data.append('firstName', formData.firstName);
+    data.append('lastName', formData.lastName);
+    data.append('email', formData.email);
+    data.append('age', String(formData.age));
+    data.append('selectedDate', formData.selectedDate!.toISOString());
+    data.append('time', formData.time!);
+    data.append('photo', formData.photo!);
+
+    axios.post(SUBMIT_FORM_URL, data)
+      .then(res => console.log('Success:', res.data))
+      .catch(err => console.error('Error:', err));
+  }
 
   return (
     <main className='min-h-screen bg-lavander-50 py-24 px-6 text-deepIndigo'>
-      <form className='mx-auto w-full max-w-106.5'>
+      <form className='mx-auto w-full max-w-106.5' onSubmit={handleSubmit}>
         <h1 className='text-2xl font-medium'>
           Personal Info
         </h1>
@@ -64,22 +101,18 @@ function App() {
 
         <h1 className='text-2xl font-medium mb-4'>Your Workout</h1>
 
-
         <div className='flex flex-col gap-4 sm:flex-row'>
           <section className='sm:w-8/10'>
             <p className='mb-2'>
               Date
             </p>
             <WorkoutCalendar
-              selectedDate={selectedDate}
-              onDateSelect={(date: Date) => {
-                setSelectedDate(date);
-                setFormData(prev => ({ ...prev, time: null })); // future-proof
-              }}
+              selectedDate={formData.selectedDate}
+              onDateSelect={handleDateInput}
             />
           </section>
 
-          {selectedDate && (
+          {formData.selectedDate && (
             <section className='sm:w-2/10'>
               <p className='mb-2'>Time</p>
               <div className='grid grid-cols-4 gap-2 sm:grid-cols-1'>
@@ -87,19 +120,18 @@ function App() {
               </div>
             </section>
           )}
-          
         </div>
 
-
-        <button
-          type='submit'
-          className='
-            cursor-pointer
-            w-full my-12 py-4 text-white font-medium text-lg
-            bg-active-100 rounded border border-lavander-100
-            '>
-          Send Application
-        </button>
+        <SubmitButton
+          disabled={
+            !formData.firstName ||
+            !formData.lastName ||
+            !formData.email ||
+            !formData.photo ||
+            !formData.selectedDate ||
+            !formData.time
+          }
+        />
       </form>
     </main>
   )
