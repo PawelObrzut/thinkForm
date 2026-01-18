@@ -15,6 +15,8 @@ function App() {
     time: null as string | null,
   });
 
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
   const handleTextInput = (key: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -60,7 +62,7 @@ function App() {
           <UploadFile file={formData.photo} onChange={handlePhotoInput} />
         </div>
 
-        <h1 className='text-2xl font-medium'>Your Workout</h1>
+        <h1 className='text-2xl font-medium mb-4'>Your Workout</h1>
 
 
         <div className='flex flex-col gap-4 sm:flex-row'>
@@ -68,27 +70,35 @@ function App() {
             <p className='mb-2'>
               Date
             </p>
-            <WorkoutCalendar />
+            <WorkoutCalendar
+              selectedDate={selectedDate}
+              onDateSelect={(date: Date) => {
+                setSelectedDate(date);
+                setFormData(prev => ({ ...prev, time: null })); // future-proof
+              }}
+            />
           </section>
 
-          <section className='sm:w-2/10'>
-            <p className='mb-2'>Time</p>
-            <div className='grid grid-cols-4 gap-2 sm:grid-cols-1'>
-              {TimeSlots.map((time) => <TimeSlot key={time} label={time} isSelected={formData.time === time} onSelect={handleTimeInput} />)}
-            </div>
-          </section>
-
+          {selectedDate && (
+            <section className='sm:w-2/10'>
+              <p className='mb-2'>Time</p>
+              <div className='grid grid-cols-4 gap-2 sm:grid-cols-1'>
+                {TimeSlots.map((time) => <TimeSlot key={time} label={time} isSelected={formData.time === time} onSelect={handleTimeInput} />)}
+              </div>
+            </section>
+          )}
+          
         </div>
 
 
-        <button 
+        <button
           type='submit'
           className='
             cursor-pointer
-            w-full my-12 p-4 text-white font-medium text-lg
+            w-full my-12 py-4 text-white font-medium text-lg
             bg-active-100 rounded border border-lavander-100
             '>
-              Send Application
+          Send Application
         </button>
       </form>
     </main>

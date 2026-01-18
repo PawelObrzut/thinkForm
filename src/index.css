@@ -89,7 +89,15 @@ body {
     @apply no-underline;
   }
 
-  .react-calendar__month-view__days button {
-    @apply p-2 cursor-pointer;
+  .react-calendar__tile {
+    @apply rounded-full aspect-square border-0 cursor-pointer;
+  }
+
+  .react-calendar__tile--active {
+    @apply bg-active-100 text-white;
+  }
+
+  .calendar-national-holiday {
+    @apply text-textGrey;
   }
 }
