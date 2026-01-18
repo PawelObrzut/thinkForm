@@ -1,5 +1,3 @@
-import React from 'react'
-
 const DeleteIcon = () => {
   return (
     <svg
@@ -8,7 +6,6 @@ const DeleteIcon = () => {
       viewBox="0 0 90 90"
       className='m-1'
       aria-hidden="true"
-      focusable="false"
     >
 
       <circle cx="45" cy="45" r="45" className="fill-deelIndigo hover:fill-danger-100" />
