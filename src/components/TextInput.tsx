@@ -10,7 +10,7 @@ type Props<Key extends string> = {
   onValidityChange?: (isValid: boolean) => void;
 };
 
-const TextField = <Key extends string,>({
+const TextInput = <Key extends string,>({
   label,
   name,
   type = 'text',
@@ -90,4 +90,4 @@ const TextField = <Key extends string,>({
   );
 };
 
-export default TextField;
+export default TextInput;
