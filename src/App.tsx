@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useReducer, useState } from "react"
 import RangeSlider from "./components/RangeSlider"
 import TextField from "./components/TextField"
 import UploadFile from "./components/UploadFile"
@@ -8,7 +8,7 @@ import SubmitButton from "./components/SubmitButton"
 import { SUBMIT_FORM_URL } from "./api/urls"
 import axios from "axios"
 
-type FormData = {
+type State = {
   firstName: string;
   lastName: string;
   email: string;
@@ -18,56 +18,70 @@ type FormData = {
   time: string | null;
 }
 
+type Action =
+  | { type: 'SET_FIELD'; field: keyof State; value: string | number | File | Date | null }
+  | { type: 'SET_DATE'; date: Date }
+  | { type: 'SET_TIME'; time: string };
+
+function reducer(state: State, action: Action):State {
+  const { type } = action;
+
+  switch (type) {
+    case 'SET_FIELD':
+      return {
+        ...state,
+        [action.field]: action.value
+      }
+    case 'SET_DATE':
+      return {
+        ...state,
+        selectedDate: action.date,
+        time: null,
+      }
+    case 'SET_TIME':
+      return {
+        ...state,
+        time: action.time
+      }
+    default:
+      return state;
+  }
+}
+
 function App() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formState, dispatch] = useReducer(reducer, {
     firstName: '',
     lastName: '',
     email: '',
     age: 8,
-    photo: null as File | null,
-    selectedDate: null as Date | null,
-    time: null as string | null,
-  });
+    photo: null,
+    selectedDate: null,
+    time: null
+  }) 
+
+  const handleTextInput = (field: keyof State, value: string) => {
+    dispatch({ type: 'SET_FIELD', field, value })
+  }
+
+  const handleAgeInput = (value: number) => {
+    dispatch({ type: 'SET_FIELD', field: 'age', value})
+  }
+
+  const handlePhotoInput = (file: File | null) => {
+    dispatch({ type: 'SET_FIELD', field: 'photo', value: file})
+  }
+
+  const handleDateInput = (date: Date) => {
+    dispatch({ type: 'SET_DATE', date: date})
+  }
+
+  const handleTimeInput = (time: string) => {
+    dispatch({ type: 'SET_TIME', time: time})
+  }
 
   const [isEmailValid, setIsEmailValid] = useState(true);
 
   const TimeSlots = ['12:00', '14:00', '16:30', '18:30', '20:00'];
-
-  const handleTextInput = (key: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [key]: value
-    }))
-  };
-
-  const handleAgeInput = (value: number) => {
-    setFormData(prev => ({
-      ...prev,
-      age: value,
-    }));
-  };
-
-  const handlePhotoInput = (file: File | null) => {
-    setFormData(prev => ({
-      ...prev,
-      photo: file,
-    }));
-  };
-
-  const handleDateInput = (date: Date) => {
-    setFormData(prev => ({
-      ...prev,
-      selectedDate: date,
-      time: null
-    }));
-  };
-
-  const handleTimeInput = (time: string) => {
-    setFormData(prev => ({
-      ...prev,
-      time,
-    }));
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,13 +90,13 @@ function App() {
 
     const data = new FormData();
 
-    data.append('firstName', formData.firstName);
-    data.append('lastName', formData.lastName);
-    data.append('email', formData.email);
-    data.append('age', String(formData.age));
-    data.append('selectedDate', formData.selectedDate!.toISOString());
-    data.append('time', formData.time!);
-    data.append('photo', formData.photo!);
+    data.append('firstName', formState.firstName);
+    data.append('lastName', formState.lastName);
+    data.append('email', formState.email);
+    data.append('age', String(formState.age));
+    data.append('selectedDate', formState.selectedDate!.toISOString());
+    data.append('time', formState.time!);
+    data.append('photo', formState.photo!);
 
     axios.post(SUBMIT_FORM_URL, data)
       .then(res => console.log('Success:', res.data))
@@ -100,14 +114,14 @@ function App() {
           <TextField
             label={'First Name'}
             name={'firstName'}
-            value={formData.firstName}
+            value={formState.firstName}
             onChange={handleTextInput}
           />
 
           <TextField
             label={'Last Name'}
             name={'lastName'}
-            value={formData.lastName}
+            value={formState.lastName}
             onChange={handleTextInput}
           />
 
@@ -115,7 +129,7 @@ function App() {
             label={'Email Address'}
             name={'email'}
             type={'email'}
-            value={formData.email}
+            value={formState.email}
             onChange={handleTextInput}
             onValidityChange={setIsEmailValid}
           />
@@ -124,12 +138,12 @@ function App() {
             min={8}
             max={100}
             label={'Age'}
-            value={formData.age}
+            value={formState.age}
             onChange={handleAgeInput}
           />
 
           <UploadFile
-            file={formData.photo}
+            file={formState.photo}
             onChange={handlePhotoInput}
           />
         </div>
@@ -142,12 +156,12 @@ function App() {
               Date
             </p>
             <WorkoutCalendar
-              selectedDate={formData.selectedDate}
+              selectedDate={formState.selectedDate}
               onDateSelect={handleDateInput}
             />
           </section>
 
-          {formData.selectedDate && (
+          {formState.selectedDate && (
             <section className='sm:w-2/10'>
               <p className='mb-2'>Time</p>
               <div className='grid grid-cols-4 gap-2 sm:grid-cols-1'>
@@ -155,7 +169,7 @@ function App() {
                   <TimeSlot
                     key={time}
                     label={time}
-                    isSelected={formData.time === time}
+                    isSelected={formState.time === time}
                     onSelect={handleTimeInput}
                   />
                 ))}
@@ -166,13 +180,13 @@ function App() {
 
         <SubmitButton
           disabled={
-            !formData.firstName ||
-            !formData.lastName ||
-            !formData.email ||
+            !formState.firstName ||
+            !formState.lastName ||
+            !formState.email ||
             !isEmailValid ||
-            !formData.photo ||
-            !formData.selectedDate ||
-            !formData.time
+            !formState.photo ||
+            !formState.selectedDate ||
+            !formState.time
           }
         />
       </form>

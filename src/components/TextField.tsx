@@ -1,23 +1,23 @@
 import { useState } from "react";
 import WarningIcon from "./icons/WarningIcon";
 
-type Props = {
+type Props<Key extends string> = {
   label: string;
-  name: string;
+  name: Key;
   type?: 'text' | 'email';
   value: string;
-  onChange: (key: string, value: string) => void;
+  onChange: (key: Key, value: string) => void;
   onValidityChange?: (isValid: boolean) => void;
 };
 
-const TextField = ({
+const TextField = <Key extends string,>({
   label,
   name,
   type = 'text',
   value,
   onChange,
   onValidityChange,
-}: Props) => {
+}: Props<Key>) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [error, setError] = useState(false);
 
