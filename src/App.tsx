@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react"
+import { useReducer } from "react"
 import RangeSlider from "./components/RangeSlider"
 import TextInput from "./components/TextInput"
 import UploadFile from "./components/UploadFile"
@@ -84,21 +84,34 @@ function App() {
     return true;
   }
 
+  const isFormComplete = ():boolean => {
+    return (
+      formState.firstName &&
+      formState.lastName &&
+      formState.email &&
+      isEmailValid &&
+      formState.photo &&
+      formState.selectedDate &&
+      formState.time
+    ) ? true : false;
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!isEmailValid) return;
+    const { firstName, lastName, selectedDate, time, photo } = formState;
+    if (!firstName || !lastName || !isEmailValid || !selectedDate || !time || !photo) return;
 
     const data = new FormData();
 
-    data.append('firstName', formState.firstName);
-    data.append('lastName', formState.lastName);
-    data.append('email', formState.email);
-    data.append('age', String(formState.age));
-    data.append('selectedDate', formState.selectedDate!.toISOString());
-    data.append('time', formState.time!);
-    data.append('photo', formState.photo!);
+    Object.entries(formState).forEach(([key, value]) => {
+      if (value instanceof File) {
+        data.append(key, value);
+      } else if (value instanceof Date) {
+        data.append(key, value.toISOString());
+      } else {
+        data.append(key, String(value))
+      }
+    })
 
     axios.post(SUBMIT_FORM_URL, data)
       .then(res => console.log('Success:', res.data))
@@ -183,15 +196,7 @@ function App() {
         </div>
 
         <SubmitButton
-          disabled={
-            !formState.firstName ||
-            !formState.lastName ||
-            !formState.email ||
-            !isEmailValid ||
-            !formState.photo ||
-            !formState.selectedDate ||
-            !formState.time
-          }
+          disabled={!isFormComplete()}
         />
       </form>
     </main>
