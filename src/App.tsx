@@ -1,4 +1,4 @@
-import { useReducer } from "react"
+import { useReducer, useEffect } from "react"
 import RangeSlider from "./components/RangeSlider"
 import TextInput from "./components/TextInput"
 import UploadFile from "./components/UploadFile"
@@ -117,6 +117,21 @@ function App() {
       .then(res => console.log('Success:', res.data))
       .catch(err => console.error('Error:', err));
   }
+
+  useEffect(() => {
+    const preventDefaults = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    document.addEventListener('dragover', preventDefaults);
+    document.addEventListener('drop', preventDefaults);
+
+    return () => {
+      document.removeEventListener('dragover', preventDefaults);
+      document.removeEventListener('drop', preventDefaults);
+    }
+  }, [])
 
   return (
     <main className='min-h-screen bg-lavander-50 py-24 px-6 text-deepIndigo'>

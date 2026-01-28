@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import PrevIcon from './icons/PrevIcon';
 import NextIcon from './icons/NextIcon';
 import InfoIcon from "./icons/InfoIcon";
-import { HOLIDAYS_API_URL } from "../api/urls"
+import { HOLIDAYS_API_URL } from "../api/urls";
 
 type Props = {
   selectedDate: Date | null;
@@ -38,6 +38,7 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
 
 
   useEffect(() => {
+    const controler = new AbortController();
     const fetchHolidays = async () => {
       try {
         const response = await axios.get(
@@ -48,7 +49,8 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
             },
             params: {
               country: "PL"
-            }
+            },
+            signal: controler.signal
           }
         );
 
@@ -59,6 +61,10 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
     };
 
     fetchHolidays();
+
+    return () => {
+      controler.abort();
+    }
   }, []);
 
   return (
@@ -85,6 +91,9 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
         value={selectedDate}
 
         onClickDay={(date) => {
+          const currentDate = new Date();
+          currentDate.setDate(currentDate.getDate() - 1);
+          if (date <= currentDate) return;
           if (isSunday(date) || hasNationalHoliday(date)) return;
           onDateSelect(date);
         }}
