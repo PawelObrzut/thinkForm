@@ -73,7 +73,17 @@ function App() {
     dispatch({ type: 'SET_TIME', time: time})
   }
 
-  const [isEmailValid, setIsEmailValid] = useState(true);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isEmailValid = emailRegex.test(formState.email);
+
+  const validateInput = (type: string, value: string):boolean => {
+    if (!value) return false;
+    if (type === 'email') {
+      return emailRegex.test(value);
+    }
+    return true;
+  }
+
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -108,6 +118,7 @@ function App() {
             name={'firstName'}
             value={formState.firstName}
             onChange={handlePersonalInfo}
+            validateInput={validateInput}
           />
 
           <TextInput
@@ -115,6 +126,7 @@ function App() {
             name={'lastName'}
             value={formState.lastName}
             onChange={handlePersonalInfo}
+            validateInput={validateInput}
           />
 
           <TextInput
@@ -123,7 +135,7 @@ function App() {
             type={'email'}
             value={formState.email}
             onChange={handlePersonalInfo}
-            onValidityChange={setIsEmailValid}
+            validateInput={validateInput}
           />
 
           <RangeSlider

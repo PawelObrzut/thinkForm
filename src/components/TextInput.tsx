@@ -7,7 +7,7 @@ type Props<Key extends string> = {
   type?: 'text' | 'email';
   value: string;
   onChange: (key: Key, value: string) => void;
-  onValidityChange?: (isValid: boolean) => void;
+  validateInput: (type: string, value: string) => boolean;
 };
 
 const TextInput = <Key extends string,>({
@@ -16,50 +16,22 @@ const TextInput = <Key extends string,>({
   type = 'text',
   value,
   onChange,
-  onValidityChange,
+  validateInput
 }: Props<Key>) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [error, setError] = useState(false);
 
-  const validateEmail = (value: string) => {
-    if (type === 'email') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(value);
-    }
-    return true;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(name, e.target.value);
-  };
-
   const handleFocus = () => setIsInputFocused(true);
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { onChange(name, e.target.value) };
   const handleBlur = () => {
     setIsInputFocused(false);
-
-    const isValid = validateEmail(value);
+    const isValid = validateInput(type, value);
     setError(!isValid);
-
-    if (type === 'email') {
-      onValidityChange?.(isValid);
-    }
   };
-
-  const baseStyle = 'text-base font-medium rounded-lg pl-4 h-12 w-full';
-  let stateStyle = '';
-
-  if (error) {
-    stateStyle = 'border-2 border-danger-100 bg-danger-50';
-  } else if (isInputFocused) {
-    stateStyle = 'border-2 border-active-100 bg-active-50';
-  } else {
-    stateStyle = 'border border-lavander-100 bg-white';
-  }
 
   return (
     <div>
-      <label htmlFor={name} className='font-normal text-base block mb-2'>
+      <label htmlFor={name} className='font-normal text-base block mb-2 cursor-pointer'>
         {label}
       </label>
 
@@ -71,13 +43,18 @@ const TextInput = <Key extends string,>({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className={`${baseStyle} ${stateStyle}`}
         aria-invalid={error}
         aria-describedby={error ? `${name}-error` : undefined}
         required
+        className={`
+          text-base font-medium rounded-lg pl-4 h-12 w-full
+          ${error ? 'border-2 border-danger-100 bg-danger-50'
+          : isInputFocused ? 'border-2 border-active-100 bg-active-50'
+          : 'border border-lavander-100 bg-white'
+          }`}
       />
 
-      {error && (
+      {error && type === 'email' && (
         <div className='flex gap-2 mt-2.25' id={`${name}-error`}>
           <WarningIcon aria-hidden="true" />
           <div>
