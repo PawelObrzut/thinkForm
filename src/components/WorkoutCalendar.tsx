@@ -75,6 +75,8 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
         formatShortWeekday={(locale, date) => date.toLocaleDateString(locale, { weekday: 'short' }).slice(0, 2)}
         prevLabel={<span><PrevIcon /></span>}
         nextLabel={<span><NextIcon /></span>}
+        next2Label={null}
+        prev2Label={null}
 
         tileDisabled={({ date, view }) => {
           if (view !== 'month') return false;

@@ -10,7 +10,7 @@ type Props<Key extends string> = {
   validateInput: (type: string, value: string) => boolean;
 };
 
-const TextInput = <Key extends string,>({
+const TextInput = <Key extends string>({
   label,
   name,
   type = 'text',
@@ -31,11 +31,16 @@ const TextInput = <Key extends string,>({
 
   return (
     <div>
-      <label htmlFor={name} className='font-normal text-base block mb-2 cursor-pointer'>
+      <label 
+        data-testid={`${name}-label`}
+        htmlFor={name} 
+        className='font-normal text-base block mb-2 cursor-pointer'
+      >
         {label}
       </label>
 
       <input
+        data-testid={`${name}-input`}
         type={type}
         id={name}
         name={name}
