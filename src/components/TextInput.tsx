@@ -60,7 +60,7 @@ const TextInput = <Key extends string>({
       />
 
       {error && type === 'email' && (
-        <div className='flex gap-2 mt-2.25' id={`${name}-error`}>
+        <div className='flex gap-2 mt-2.25' id={`${name}-error`} data-testid={`${name}-error`}>
           <WarningIcon aria-hidden="true" />
           <div>
             <p>Please use correct formatting</p>

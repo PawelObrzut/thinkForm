@@ -10,8 +10,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   test: {
+    environment: "jsdom",
     exclude: ['packages/template/*'],
     include: ['./src/components/*.test.tsx'],
-    environment: "jsdom",
   },
 })
