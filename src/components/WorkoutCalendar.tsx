@@ -68,7 +68,7 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
   }, []);
 
   return (
-    <div>
+    <div data-testid='workout-calendar'>
       <Calendar
         locale='en-GB'
         showNeighboringMonth={false}
@@ -80,8 +80,13 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
 
         tileDisabled={({ date, view }) => {
           if (view !== 'month') return false;
-          return isSunday(date) || hasNationalHoliday(date);
+          
+          const currentDate = new Date();
+          currentDate.setDate(currentDate.getDate() - 1);
+
+          return date <= currentDate || isSunday(date) || hasNationalHoliday(date);
         }}
+
         tileClassName={({ date, view }) => {
           if (view !== 'month') return '';
 
@@ -93,9 +98,6 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
         value={selectedDate}
 
         onClickDay={(date) => {
-          const currentDate = new Date();
-          currentDate.setDate(currentDate.getDate() - 1);
-          if (date <= currentDate) return;
           if (isSunday(date) || hasNationalHoliday(date)) return;
           onDateSelect(date);
         }}
