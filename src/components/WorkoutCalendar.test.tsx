@@ -3,7 +3,7 @@ import { dateFormatterYEAR_MONTH_DAY, isSunday, isTheSameDate } from '../utility
 
 describe('Date formatter function', () => {
   it('formats dates to YYYY-MM-DD', () => {
-    const date = new Date(2020,3,19);
+    const date = new Date(2020,2,19);
     expect(dateFormatterYEAR_MONTH_DAY(date)).toBe('2020-03-19');
   })
 })
