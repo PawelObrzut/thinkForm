@@ -5,6 +5,7 @@ import PrevIcon from './icons/PrevIcon';
 import NextIcon from './icons/NextIcon';
 import InfoIcon from "./icons/InfoIcon";
 import { HOLIDAYS_API_URL } from "../api/urls";
+import { isSunday, isTheSameDate } from "../utility/dateHelperFunctions"
 
 type Props = {
   selectedDate: Date | null;
@@ -17,22 +18,12 @@ type Holiday = {
   type: string;
 };
 
+
 const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const NATIONAL_HOLIDAY = 'NATIONAL_HOLIDAY';
   const OBSERVANCE = 'OBSERVANCE';
-
-  const dateFormatterYEAR_MONTH_DAY = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
   
-  const isSunday = (date: Date) => date.getDay() === 0;
-  const isTheSameDate = (calendarDate: Date, apiDate: string) => dateFormatterYEAR_MONTH_DAY(calendarDate) === apiDate;
-
   const hasNationalHoliday = (date: Date) => holidays.some((holiday) => isTheSameDate(date, holiday.date) && holiday.type === NATIONAL_HOLIDAY);
   const observance = selectedDate ? holidays.find(holiday => isTheSameDate(selectedDate, holiday.date) && holiday.type === OBSERVANCE) : null;
 
