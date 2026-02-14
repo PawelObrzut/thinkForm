@@ -25,21 +25,15 @@ const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
 
   const { data: holidays = [], isPending, isError } = useQuery<Holiday[]>({
     queryKey: ['calendarData'],
-    queryFn: async ({ signal }) => {
-      const response = await axios.get(
-        HOLIDAYS_API_URL,
-        {
-          headers: {
-            "X-Api-Key": import.meta.env.VITE_API_NINJA_KEY
-          },
-          params: {
-            country: "PL"
-          },
-          signal
-        }
+    queryFn: ({ signal }) => (
+      axios
+        .get(HOLIDAYS_API_URL, {
+          signal,
+          headers: { "X-Api-Key": import.meta.env.VITE_API_NINJA_KEY },
+          params: { country: "PL" }
+        })
+        .then(response => response.data)
       )
-      return response.data
-    }
   })
 
   const hasNationalHoliday = (date: Date) => holidays.some((holiday) => isTheSameDate(date, holiday.date) && holiday.type === NATIONAL_HOLIDAY);
