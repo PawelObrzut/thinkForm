@@ -1,40 +1,20 @@
-import axios from "axios";
 import Calendar from "react-calendar";
 import PrevIcon from './icons/PrevIcon';
 import NextIcon from './icons/NextIcon';
 import InfoIcon from "./icons/InfoIcon";
-import { HOLIDAYS_API_URL } from "../api/urls";
 import { isSunday, isTheSameDate } from "../utility/dateHelperFunctions"
-import { useQuery } from '@tanstack/react-query'
+import { useHolidays } from "../hooks/useHolidays";
 
 type Props = {
   selectedDate: Date | null;
   onDateSelect: (date: Date) => void;
 }
 
-type Holiday = {
-  date: string;
-  name: string;
-  type: string;
-};
-
-
 const WorkoutCalendar = ({ selectedDate, onDateSelect }: Props) => {
   const NATIONAL_HOLIDAY = 'NATIONAL_HOLIDAY';
   const OBSERVANCE = 'OBSERVANCE';
 
-  const { data: holidays = [], isPending, isError } = useQuery<Holiday[]>({
-    queryKey: ['calendarData'],
-    queryFn: ({ signal }) => (
-      axios
-        .get(HOLIDAYS_API_URL, {
-          signal,
-          headers: { "X-Api-Key": import.meta.env.VITE_API_NINJA_KEY },
-          params: { country: "PL" }
-        })
-        .then(response => response.data)
-      )
-  })
+  const { data: holidays = [], isPending, isError } = useHolidays();
 
   const hasNationalHoliday = (date: Date) => holidays.some((holiday) => isTheSameDate(date, holiday.date) && holiday.type === NATIONAL_HOLIDAY);
   const observance = selectedDate ? holidays.find((holiday) => isTheSameDate(selectedDate, holiday.date) && holiday.type === OBSERVANCE) : null;
