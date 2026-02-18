@@ -193,21 +193,26 @@ function App() {
             />
           </section>
 
-          {formState.selectedDate && (
-            <section className='sm:w-2/10'>
-              <p className='mb-2'>Time</p>
-              <div className='grid grid-cols-4 gap-2 sm:grid-cols-1'>
-                {TIMESLOTS.map((time) => (
-                  <TimeSlot
-                    key={time}
-                    label={time}
-                    isSelected={formState.time === time}
-                    onSelect={handleTimeInput}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
+          {
+          formState.selectedDate ? 
+            (
+              <section className='sm:w-2/10'>
+                <p className='mb-2'>Time</p>
+                <div className='grid grid-cols-4 gap-2 sm:grid-cols-1'>
+                  {TIMESLOTS.map((time) => (
+                    <TimeSlot
+                      key={time}
+                      label={time}
+                      isSelected={formState.time === time}
+                      onSelect={handleTimeInput}
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : (
+              <section className='sm:w-2/10'></section>
+            )
+        }
         </div>
 
         <SubmitButton
