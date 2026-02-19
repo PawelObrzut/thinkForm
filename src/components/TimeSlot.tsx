@@ -12,7 +12,8 @@ const TimeSlot = ({label, isSelected, onSelect}: Props) => {
       className={`
         flex align-middle justify-center
         rounded-lg text-base px-4.25 py-3.5 bg-white cursor-pointer
-        ${isSelected ? 'border-active-100 border-2' : 'border-lavander-100 border'}
+        border-lavander-100 border
+        ${isSelected && 'ring-2 ring-active-100 outline-active-100 border-transparent'}
         `}>
       {label}
     </button>

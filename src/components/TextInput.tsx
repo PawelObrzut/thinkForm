@@ -25,15 +25,20 @@ const TextInput = <Key extends string>({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { onChange(name, e.target.value) };
   const handleBlur = () => {
     setIsInputFocused(false);
-    const isValid = validateInput(type, value);
+
+    const trimmedValue = value.trim();
+    if (trimmedValue !== value) {
+      onChange(name, trimmedValue);
+    }
+    const isValid = validateInput(type, trimmedValue);
     setError(!isValid);
   };
 
   return (
     <div>
-      <label 
+      <label
         data-testid={`${name}-label`}
-        htmlFor={name} 
+        htmlFor={name}
         className='font-normal text-base block mb-2 cursor-pointer'
       >
         {label}
@@ -54,8 +59,8 @@ const TextInput = <Key extends string>({
         className={`
           text-base font-medium rounded-lg pl-4 h-12 w-full
           ${error ? 'border-2 border-danger-100 bg-danger-50'
-          : isInputFocused ? 'border-2 border-active-100 bg-active-50'
-          : 'border border-lavander-100 bg-white'
+            : isInputFocused ? 'border-2 border-active-100 bg-active-50'
+              : 'border border-lavander-100 bg-white'
           }`}
       />
 

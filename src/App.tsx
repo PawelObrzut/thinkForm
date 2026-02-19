@@ -104,7 +104,9 @@ function App() {
     const data = new FormData();
 
     Object.entries(formState).forEach(([key, value]) => {
-      if (value instanceof File) {
+      if (typeof value === 'string') {
+        data.append(key, value.trim());
+      } else if (value instanceof File) {
         data.append(key, value);
       } else if (value instanceof Date) {
         data.append(key, value.toISOString());
